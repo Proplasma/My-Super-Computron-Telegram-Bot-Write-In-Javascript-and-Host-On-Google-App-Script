@@ -3,6 +3,15 @@
 
 ## 1. TỔNG QUAN DỰ ÁN
 Dự án cung cấp một giải pháp quản lý tự động tích hợp đa chức năng trên nền tảng Telegram, sử dụng Google Apps Script (GAS) làm trung tâm xử lý dữ liệu. Hệ thống biến Google Sheets thành một cơ sở dữ liệu quan hệ đơn giản và Google Drive thành kho lưu trữ tệp tin đám mây.
+<img width="2103" height="1164" alt="image" src="https://github.com/user-attachments/assets/6908aaf2-735d-4d98-8ed3-91c0f047fb1e" />
+
+<img width="1083" height="959" alt="image" src="https://github.com/user-attachments/assets/825aa712-3319-4f6d-9e8b-e17c6abcbb54" />
+
+
+<img width="1074" height="881" alt="image" src="https://github.com/user-attachments/assets/d95a8379-dea3-4032-bcc4-bbbaa2dde405" />
+
+<img width="1070" height="627" alt="image" src="https://github.com/user-attachments/assets/6bcff8b5-84d9-4356-8b23-5cc6a21a61cf" />
+
 
 Bot được tối ưu hóa cho các nhu cầu cá nhân và nhóm nhỏ, giúp số hóa việc ghi chép tài chính, lưu trữ hóa đơn, tra cứu dữ liệu và nhắc nhở thông tin quan trọng.
 
