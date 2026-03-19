@@ -1,6 +1,6 @@
 /**
   * ============================================================================
- * PHẦN 1: CẤU HÌNH (SETUP) - v29
+ * PHẦN 1: CẤU HÌNH (SETUP) - v29 (Modified)
  * ============================================================================
  */
 
@@ -152,7 +152,7 @@ function logGenRequest(user, type, content, imageUrl) {
 
 /**
  * ============================================================================
- * PHẦN 5: MODULE TÀI CHÍNH (THU CHI & LƯƠNG CỦA BÀ)
+ * PHẦN 5: MODULE TÀI CHÍNH (THU CHI)
  * ============================================================================
  */
 
@@ -183,37 +183,6 @@ function logTransaction(user, amount, note, billUrl = "") {
   // [UPDATE] Ghi thêm cột billUrl
   sheet.appendRow(["", now, now, user, amount, formula, note, billUrl]);
    SpreadsheetApp.flush();
-  return sheet.getRange(sheet.getLastRow(), 6).getValue();
-}
-
-function createLCBSheet() {
-  const ss = SpreadsheetApp.openById(getConfig().ssId);
-  if (ss.getSheetByName("Lương Của Bà")) return; 
-  
-  const sheet = ss.insertSheet("Lương Của Bà");
-  // [UPDATE] Thêm cột Hình Ảnh Bill
-  const headers = ["STT", "Thời Gian", "Ngày", "Người Thực Hiện", "Số Tiền", "Tổng Số Dư", "Ghi Chú", "Hình Ảnh Bill"];
-  sheet.getRange(1, 1, 1, headers.length).setValues([headers]).setFontWeight("bold").setBackground("#8e44ad").setFontColor("white");
-  sheet.setFrozenRows(1);
-  sheet.getRange("B2:B").setNumberFormat("HH:mm:ss");
-  sheet.getRange("C2:C").setNumberFormat("dd/MM/yyyy");
-  sheet.getRange("E2:F").setNumberFormat("#,##0"); 
-  sheet.getRange("A2").setFormula('=IFERROR(ARRAYFORMULA(IF(C2:C<>"",ROW(C2:C)-1,"")),"")');
-}
-
-// [UPDATE] Thêm tham số billUrl
-function logLCBTransaction(user, amount, note, billUrl = "") {
-  const ss = SpreadsheetApp.openById(getConfig().ssId);
-  let sheet = ss.getSheetByName("Lương Của Bà");
-  if (!sheet) { createLCBSheet(); sheet = ss.getSheetByName("Lương Của Bà"); }
-
-  const now = new Date();
-  const nextRow = sheet.getLastRow() + 1; 
-  const formula = `=N(F${nextRow - 1}) + E${nextRow}`;
-
-  // [UPDATE] Ghi thêm cột billUrl
-  sheet.appendRow(["", now, now, user, amount, formula, note, billUrl]);
-  SpreadsheetApp.flush();
   return sheet.getRange(sheet.getLastRow(), 6).getValue();
 }
 
@@ -525,7 +494,7 @@ function checkExpiringVouchers(chatId) {
   if (list.length === 0) {
     sendText(chatId, "✅ Không có Voucher nào sắp hết hạn (trong 2 tuần tới).");
   } else {
-    let msg = "🎫 <b>DANH SÁCH VOUCHER SẮP HẾT HẠN</b>\n\n";
+    let msg = "🎫 <b>DANH SÁCH VOUCHER SẮH HẾT HẠN</b>\n\n";
     let limit = Math.min(list.length, 20); // Tối đa 20 mã
     
     for (let k = 0; k < limit; k++) {
@@ -628,9 +597,9 @@ function doPost(e) {
       const fileId = largestPhoto.file_id;
       uploadedPhotoUrl = uploadPhotoToDrive(fileId, text); 
       
-      // Nếu có ảnh nhưng KHÔNG phải là lệnh Thu Chi (/c, /lcb), thì báo đã lưu ảnh và dừng.
+      // Nếu có ảnh nhưng KHÔNG phải là lệnh Thu Chi (/c), thì báo đã lưu ảnh và dừng.
       // Nếu là lệnh Thu Chi, thì tiếp tục chạy xuống dưới để ghi sổ với link ảnh.
-      const isBillCommand = text.toLowerCase().startsWith("/c ") || text.toLowerCase().startsWith("/lcb ");
+      const isBillCommand = text.toLowerCase().startsWith("/c ");
 
       if (!isBillCommand) {
         if (uploadedPhotoUrl) {
@@ -836,25 +805,6 @@ function doPost(e) {
         }
       }
     }
-
-    // --- [UPDATE] LỆNH LƯƠNG CỦA BÀ CÓ ẢNH BILL (/lcb) ---
-    else if (command.startsWith("/lcb ")) {
-      const match = text.match(/^\/lcb\s+([+\-]?[\d\.,]+)\s*(.*)/i);
-      if (match) {
-        let amount = parseInt(match[1].replace(/[\.,]/g, ""));
-        let note = match[2] || "Không ghi chú";
-        if (!isNaN(amount)) {
-          // Gọi hàm với tham số uploadedPhotoUrl
-          const bal = logLCBTransaction(name, amount, note, uploadedPhotoUrl);
-          
-          const icon = amount >= 0 ? "👵 THU" : "👵 CHI";
-          let msg = `[LƯƠNG CỦA BÀ]\n${icon}: ${amount.toLocaleString()} đ\n📝 ${note}\n💰 Dư: ${bal.toLocaleString()} đ`;
-          if (uploadedPhotoUrl) msg += `\n📎 <b>Đã đính kèm Bill</b>`;
-
-          sendText(chatId, msg);
-        }
-      }
-    }
     
     else if (command.startsWith("/fakevoucher ")) {
       const args = text.substring(12).trim().split(/\s+/);
@@ -989,7 +939,6 @@ function doPost(e) {
                "👉 VD: /voucher 50k CODE123 12/02/2025 Circle K\n" +
                "--------------------------\n" +
                "💰 <b>Quỹ Chung:</b> <code>/c +50k...</code> (Gửi kèm ảnh để lưu Bill)\n" +
-               "👵 <b>Lương Bà:</b> <code>/lcb +50k...</code> (Gửi kèm ảnh để lưu Bill)\n" +
                "--------------------------\n" +
                "📓 <b>Ghi Nợ:</b> <code>/n 100k Phát...</code>\n" +
                "📓 <b>Xem Nợ:</b> <code>/nlist</code> hoặc <code>/nlist Phát</code>\n" +
