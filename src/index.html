@@ -1,0 +1,170 @@
+<html lang='vi'>
+<head>
+    <meta charset='utf-8'>
+    <meta content='width=device-width, initial-scale=1, user-scalable=1' name='viewport'>
+    <title>Voucher View</title>
+    
+    <style type="text/css">@font-face {font-family:Poppins;font-style:normal;font-weight:400;src:url(/cf-fonts/s/poppins/5.0.11/latin/400/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}@font-face {font-family:Poppins;font-style:normal;font-weight:600;src:url(/cf-fonts/s/poppins/5.0.11/latin/600/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}</style>
+    
+    <link rel="stylesheet" crossorigin="anonymous" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" media="all" />
+    <link rel="stylesheet" href="https://www.wogi.sg/assets/vouchers/main-cbbd6d41d64be99e61246f821a9c8812397199a1b1a44851aaccb62934024228.css" media="all" />
+
+    <style>
+        .accordion-content { display: none; padding: 10px; } 
+        .accordion-header { cursor: pointer; user-select: none; } 
+        
+        /* Căn chỉnh ảnh Barcode */
+        .barcode-img { max-width: 100%; height: auto; display: block; margin: 10px auto; }
+        
+        /* Căn chỉnh ảnh QR Code */
+        .qr-img { width: 160px; height: 160px; display: block; margin: 0 auto; }
+        
+        /* CSS cho ảnh bìa và ảnh logo để không bị vỡ khung */
+        .custom-img { width: 100%; height: auto; object-fit: cover; display: block; }
+        
+        /* Màu chữ Mã Voucher cho nổi bật */
+        .voucher-text-highlight { color:#d00; font-weight:bold; font-size:1.1em; }
+    </style>
+</head>
+
+<body>
+    <div id='app'>
+        <div id='voucher'>
+            <div class='card is-voucher-card'>
+                
+                <div class='card-image is-product-image'>
+                    <? if (linkAnh) { ?>
+                        <img src="<?= linkAnh ?>" class="custom-img" alt="Banner Voucher" onerror="this.style.display='none'"/>
+                    <? } else { ?>
+                        <img src="https://via.placeholder.com/600x300?text=No+Image" class="custom-img"/>
+                    <? } ?>
+                </div>
+                
+                <div class='card-header is-bordered'>
+                    <div class='card-header-title'>
+                        <h2 class='title is-2'>
+                            <div class='text'>Số tiền</div>
+
+                            <div class='amount'><?= soTien ?></div>
+
+                        </h2>
+                    </div>
+                </div>
+                
+                <div class='card-content is-bordered p-0'>
+                    <div class='details is-featured is-bordered'>
+                        <div class='details-list'>
+                            <div class='details-item'><div class='item-name'>Cách đổi quà</div><div class='item-value'>Tại cửa hàng</div></div>
+                            <div class='details-item'><div class='item-name'>Loại</div><div class='item-value'>Tiền mặt</div></div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class='card-content is-bordered p-0'>
+                    <div class='details'>
+                        <div class='details-list'>
+                            
+                            <div class="details-item">
+                                <div class="item-name">MÃ VOUCHER:</div>
+                                <div class="item-value voucher-text-highlight">
+                                    <?= maVoucher ?>
+                                </div>
+                            </div>
+                            
+                            <div class='details-item'><div class='item-name'>Ngày hết hạn</div><div class='item-value'>21 Jan 2030</div></div>
+                            <div class='details-item'><div class='item-name'>Ngày phát hành</div><div class='item-value'>24 Jul 2025</div></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='card-content is-bordered'>
+                    <button class='button is-large is-fullwidth mb-4'>Sao chép đường dẫn voucher</button>
+                    <div class='buttons'>
+                        <div class='button is-large is-fullwidth'>Đánh dấu đã sử dụng</div>
+                    </div>
+                </div>
+
+                <div class='card-content is-bordered'>
+                    <div class='barcode'>
+                        <img src="<?= qrUrl ?>" class="qr-img" alt="QR Code" />
+                    </div>
+                    <br>
+                    <img src="<?= barcodeUrl ?>" class="barcode-img" alt="Barcode" />
+                </div>
+
+                <div class='card-content p-0'>
+                    <div class='accordion'>
+                        <div class='accordion-header' onclick="toggleAccordion(this)">
+                            <h6 class='title is-6'>Cách đổi quà</h6>
+                            <i class='icon fas fa-chevron-down'></i>
+                        </div>
+                        <div class='accordion-content'>
+                            <div class='card-content is-bordered p-0'>
+                                <div class='details is-featured is-bordered'>
+                                    <div class='item-value'><strong>Tại cửa hàng</strong></div><br>
+                                    <div class='item-value'>
+                                        <p>Vui lòng trình đường link chứa voucher cho nhân viên tại quầy thu ngân trước khi thanh toán.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                <div class='card-image is-brand-image'>
+                     <? if (linkAnh) { ?>
+                        <img src="<?= linkAnh ?>" class="custom-img" alt="Brand Logo" onerror="this.style.display='none'"/>
+                    <? } ?>
+                </div>
+            </div>
+            
+            <div class='support'><a target="blank" href="https://cs.wogi.biz/">Cần giúp đỡ?</a></div>
+            <div class='brand'><a target="blank" href="https://wogi.biz"><img alt="Wogi" class="is-wogi-image" src="https://www.wogi.sg/assets/vouchers/brand-6e2d0e312889e8c117a5f23d44e50b1c08d728c36fb451f20bd88d03adc7d7f8.svg" /></a></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleAccordion(element) {
+            var content = element.nextElementSibling;
+            var icon = element.querySelector('.icon');
+
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                if(icon) {
+                    icon.classList.remove('fa-chevron-up');
+                    icon.classList.add('fa-chevron-down');
+                }
+            } else {
+                content.style.display = "block";
+                if(icon) {
+                    icon.classList.remove('fa-chevron-down');
+                    icon.classList.add('fa-chevron-up');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
+
+
+                        <div class='accordion-header' onclick="toggleAccordion(this)">
+                            <h6 class='title is-6'>Các điều khoản và điều kiện</h6>
+                            <i class='icon fas fa-chevron-down'></i>
+                        </div>
+                        <div class='accordion-content'>
+                            <p><strong>Điều kiện sử dụng:</strong><br />
+                            1. Đến trực tiếp tại cửa hàng để sử dụng voucher<br />
+                            2. Voucher này được áp dụng kèm với các chương trình khuyến mãi khác<br />
+                            3. Voucher này có thể được tính chung vào các khuyến mãi như cộng điểm, giảm giá<br />
+                            4. Áp dụng cho tất cả các ngày trong tuần, ngày lễ và Năm mới<br />
+                            </p>
+                        </div>
+
+                        <div class='accordion-header' onclick="toggleAccordion(this)">
+                            <h6 class='title is-6'>Để Hỗ Trợ</h6>
+                            <i class='icon fas fa-chevron-down'></i>
+                        </div>
+                        <div class='accordion-content'>
+                            <p>cs@wogi.biz / (028) 7308.3377</p>
+                        </div>
+                    </div>
+                </div>
